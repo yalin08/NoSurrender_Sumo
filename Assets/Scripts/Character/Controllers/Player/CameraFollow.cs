@@ -18,6 +18,6 @@ public class CameraFollow : Singleton<CameraFollow>
 
     void LateUpdate()
     {
-        transform.position = Vector3.MoveTowards(transform.position, FollowObject.position + offset, speed * Time.deltaTime);
+        transform.position = Vector3.Lerp(transform.position, FollowObject.position + offset, speed * Time.deltaTime);
     }
 }

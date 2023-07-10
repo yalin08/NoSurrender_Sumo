@@ -6,7 +6,8 @@ using UnityEngine;
 
 [RequireComponent(typeof(CharacterMove))]
 [RequireComponent(typeof(CharacterStats))]
-[RequireComponent(typeof(CharacterColliderController))]
+
+[RequireComponent(typeof(AnimationController))]
 public class ControllerBase : MonoBehaviour
 {
 
