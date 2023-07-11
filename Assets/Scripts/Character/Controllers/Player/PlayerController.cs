@@ -26,17 +26,19 @@ public class PlayerController : ControllerBase
         Vector3 vector = new Vector3(x, 0, z).normalized;
 
         MoveToObject.position = transform.position + vector;
+        MoveToObject.LookAt(transform.position);
 
     }
 
     // Update is called once per frame
     void Update()
     {
+        DetermineWhereToGo();
         if (!Move.canMove)
         {
             return;
         }
-        DetermineWhereToGo();
+    
         Move.MoveTo(MoveToObject);
 
         if (Input.GetKeyDown(KeyCode.A))

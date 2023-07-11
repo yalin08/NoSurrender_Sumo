@@ -21,6 +21,7 @@ public class AnimationController : MonoBehaviour
 
     public void Dance()
     {
+        animator.speed =1;
         animator.SetTrigger("Dance");
     }
 

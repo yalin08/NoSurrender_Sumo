@@ -8,7 +8,7 @@ public class CharacterMove : MonoBehaviour
 {
     [HideInInspector] public CharacterStats Stats;
     [HideInInspector] public AnimationController ac;
-    Rigidbody rb;
+    [HideInInspector] public Rigidbody rb;
 
 
     public bool canMove = true;
@@ -61,8 +61,8 @@ public class CharacterMove : MonoBehaviour
         Vector3 MoveFromVector = new Vector3(transform.position.x, 0, transform.position.z);
         direction = Vector3.Normalize(MoveToVector - MoveFromVector);
 
-        transform.rotation =Quaternion.RotateTowards(transform.rotation, LookRotation(MoveToObject), Stats.Speed);
-         velocity = Vector3.MoveTowards(velocity,direction * Stats.Speed, Stats.Speed );
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, LookRotation(MoveToObject), Stats.speed);
+        velocity = Vector3.MoveTowards(velocity, direction * Stats.speed, Stats.speed *10* Time.deltaTime);
         velocity.y = rb.velocity.y;
         rb.velocity = velocity;
     }
@@ -70,7 +70,7 @@ public class CharacterMove : MonoBehaviour
     public void Knockback(Vector3 vector3, float otherSize)
     {
         canMove = false;
-        
+
         if (gameObject.layer == 3)
         {
             CameraFollow.Instance.ShakeCamera();
@@ -79,7 +79,9 @@ public class CharacterMove : MonoBehaviour
         float sizeDifference = otherSize - Stats.SizePoints;
         if (sizeDifference < 1) sizeDifference = 1;
 
-        float throwForce = Mathf.Pow(sizeDifference, 1f / 10f)*0.6f;
+        sizeDifference += otherSize/2;
+
+        float throwForce = Mathf.Pow(sizeDifference, 1f / 10f) * 0.6f;
 
         rb.velocity = Vector3.zero;
         rb.AddForce(vector3 * throwForce);

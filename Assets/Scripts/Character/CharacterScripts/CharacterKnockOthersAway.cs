@@ -9,6 +9,7 @@ public class CharacterKnockOthersAway : MonoBehaviour
     
 
     public float KnockbackAmount;
+    public float criticalMultiplier;
     private void OnValidate()
     {
         Stats = GetComponentInParent<CharacterStats>();
@@ -51,7 +52,7 @@ public class CharacterKnockOthersAway : MonoBehaviour
 
 
 
-            cm.Knockback(directionEnemy * KnockbackAmount * 1.1f, Stats.SizePoints);
+            cm.Knockback(directionEnemy * KnockbackAmount * criticalMultiplier, Stats.SizePoints);
             cm.Stats.LastTouchedEnemy = Stats;
         }
 

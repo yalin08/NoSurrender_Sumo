@@ -5,30 +5,53 @@ using DG.Tweening;
 
 public class CharacterStats : MonoBehaviour
 {
-    public int SizePoints=0;
-    public float Speed=1;
-    public float SpeedOnStart=1;
+    public int SizePoints = 0;
+    public float speed = 1;
+    [HideInInspector] public float speedOnStart = 1;
     [HideInInspector] public GameObject crown;
     [HideInInspector] public CharacterStats LastTouchedEnemy;
+
+    int kills = 0;
     private void Start()
     {
-        SpeedOnStart = Speed;
+        speedOnStart = speed;
         crown = GetComponentInChildren<CharacterAnimationEvent>().crown;
     }
 
     public void UpdateStats(int Value)
     {
         SizePoints += Value;
-        float f = 1 - 1 / (1 + 0.1f * (SizePoints / 100));
-        Speed = SpeedOnStart - f;
-        f = f *2 ;
+        float f = 1 - 1 / (1 + 0.1f * (SizePoints));
 
-        transform.DOScale(1 + f,0.5f);
+        if (gameObject.layer == 3)
+        {
+            UIManager.Instance.UpdateScore(SizePoints * 100);
+            CameraFollow.Instance.ChangeOffset(f);
+        }
+        speed = speedOnStart - f / 2;
+
+        f = f * 2;
+
+        transform.DOScale(1 + f, 0.5f);
+
 
     }
     public void Die()
     {
-        LastTouchedEnemy.UpdateStats( SizePoints);
+        if (gameObject.layer == 3)
+            GameManager.Instance.Lose();
+
+        if (LastTouchedEnemy != null)
+        {
+            LastTouchedEnemy.UpdateStats(SizePoints);
+            LastTouchedEnemy.kills++;
+
+
+            if (LastTouchedEnemy.gameObject.layer == 3)
+                UIManager.Instance.DefeatedEnemies.text = "Enemies Defeated:\n" + LastTouchedEnemy.kills;
+        }
+
+
         GameManager.Instance.Characters.Remove(this);
         Destroy(gameObject);
 

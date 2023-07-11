@@ -15,7 +15,7 @@ public class BurgerSpawner : Singleton<BurgerSpawner>
     public Transform[] SpawnLocations;
     [HideInInspector] public List<Transform> _SpawnLocations;
     public List<Transform> BurgersOnTheScene;
-
+    
 
     public IEnumerator SpawnBurgers()
     {
@@ -32,7 +32,7 @@ public class BurgerSpawner : Singleton<BurgerSpawner>
 
         int i = Random.Range(0, _SpawnLocations.Count);
 
-        GameObject burger = Instantiate(BurgerPrefab, _SpawnLocations[i].position, Quaternion.identity, transform.root);
+        GameObject burger = Instantiate(BurgerPrefab, _SpawnLocations[i].position, Quaternion.identity, _SpawnLocations[i].root);
         BurgersOnTheScene.Add(burger.transform);
         _SpawnLocations.Remove(_SpawnLocations[i]);
         StartCoroutine(SpawnBurgers());
@@ -40,10 +40,11 @@ public class BurgerSpawner : Singleton<BurgerSpawner>
 
     public void StartTheGame()
     {
-        StartCoroutine(SpawnBurgers());
+       
         GameObject[] BurgersInStart = GameObject.FindGameObjectsWithTag("Burger");
         foreach (GameObject go in BurgersInStart)
             BurgersOnTheScene.Add(go.transform);
+        StartCoroutine(SpawnBurgers());
     }
 
 

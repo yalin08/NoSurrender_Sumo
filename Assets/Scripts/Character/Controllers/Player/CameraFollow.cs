@@ -8,6 +8,7 @@ public class CameraFollow : Singleton<CameraFollow>
 {
 
     public Vector3 offset;
+     Vector3 _offset;
 
     public Transform followObject;
     public float speed;
@@ -17,17 +18,22 @@ public class CameraFollow : Singleton<CameraFollow>
     private void Start()
     {
         mainCamera = Camera.main;
-        transform.position = followObject.position + offset;
+        _offset = offset;
+        transform.position = followObject.position + _offset;
     }
 
     public void ShakeCamera()
     {
         mainCamera.DOShakePosition(0.1f, 1f);
+    }  
+    public void ChangeOffset(float f)
+    {
+        _offset.z = offset.z - f;
     }
 
     void LateUpdate()
     {
         if(followObject!=null)
-        transform.position = Vector3.Lerp(transform.position, followObject.position + offset, speed * Time.deltaTime);
+        transform.position = Vector3.Lerp(transform.position, followObject.position + _offset, speed * Time.deltaTime);
     }
 }

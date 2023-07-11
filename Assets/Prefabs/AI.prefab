@@ -182,8 +182,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SizePoints: 0
-  Speed: 1
-  SpeedOnStart: 1
+  speed: 2.1
+  speedOnStart: 1
+  crown: {fileID: 0}
+  LastTouchedEnemy: {fileID: 0}
 --- !u!114 &5357686140440775839
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -210,7 +212,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Stats: {fileID: 0}
-  GainByEating: 100
+  GainByEating: 1
 --- !u!114 &5957135712469967137
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -225,7 +227,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Stats: {fileID: 0}
   Move: {fileID: 0}
-  KnockbackAmount: 300
+  KnockbackAmount: 600
+  criticalMultiplier: 1.2
 --- !u!54 &7127289909194290320
 Rigidbody:
   m_ObjectHideFlags: 0
