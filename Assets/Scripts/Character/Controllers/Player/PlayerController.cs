@@ -32,6 +32,10 @@ public class PlayerController : ControllerBase
     // Update is called once per frame
     void Update()
     {
+        if (!Move.canMove)
+        {
+            return;
+        }
         DetermineWhereToGo();
         Move.MoveTo(MoveToObject);
 

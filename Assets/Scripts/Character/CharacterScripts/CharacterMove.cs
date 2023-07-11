@@ -11,9 +11,9 @@ public class CharacterMove : MonoBehaviour
     Rigidbody rb;
 
 
-    public bool CanMove = true;
+    public bool canMove = true;
 
-    public float KnockBackTimer;
+
 
     private void OnValidate()
     {
@@ -24,17 +24,24 @@ public class CharacterMove : MonoBehaviour
     }
     private void Update()
     {
-        if (CanMove)
+        if (canMove)
         {
 
             float f = 1 - 1 / (1 + 0.3f * (Stats.SizePoints / 100));
             f = 1 - f / 2;
             ac.Run(f);
-           // Debug.Log(f);
+            // Debug.Log(f);
         }
 
+        if (transform.position.y < -0.5f)
+        {
+            Die();
+        }
     }
+    void Die()
+    {
 
+    }
     Quaternion LookRotation(Transform RotationObject)
     {
         var lookPos = RotationObject.position - transform.position;
@@ -44,26 +51,47 @@ public class CharacterMove : MonoBehaviour
         return rotation;
 
     }
+    Vector3 direction; Vector3 velocity;
     public void MoveTo(Transform MoveToObject)
     {
-        if (!CanMove)
+        if (!canMove)
             return;
 
         Vector3 MoveToVector = new Vector3(MoveToObject.position.x, 0, MoveToObject.position.z);
         Vector3 MoveFromVector = new Vector3(transform.position.x, 0, transform.position.z);
-        Vector3 direction = Vector3.Normalize(MoveToVector - MoveFromVector);
+        direction = Vector3.Normalize(MoveToVector - MoveFromVector);
 
-        transform.rotation = LookRotation(MoveToObject);
-        Vector3 velocity = direction * Stats.Speed;
+        transform.rotation =Quaternion.RotateTowards(transform.rotation, LookRotation(MoveToObject), Stats.Speed);
+         velocity = Vector3.MoveTowards(velocity,direction * Stats.Speed, Stats.Speed );
         velocity.y = rb.velocity.y;
         rb.velocity = velocity;
     }
 
-    public void Knockback(Vector3 vector3)
+    public void Knockback(Vector3 vector3, float otherSize)
     {
-        Debug.Log("y");
-        rb.AddForce(vector3 );
-        ac.Fall(vector3.sqrMagnitude);
+        canMove = false;
+        
+        if (gameObject.layer == 3)
+        {
+            CameraFollow.Instance.ShakeCamera();
+        }
+
+        float sizeDifference = otherSize - Stats.SizePoints;
+        if (sizeDifference < 1) sizeDifference = 1;
+
+        float throwForce = Mathf.Pow(sizeDifference, 1f / 10f)*0.6f;
+
+        rb.velocity = Vector3.zero;
+        rb.AddForce(vector3 * throwForce);
+
+        //   float FallTime = 1 - 1 / (1 + 0.1f * ());
+        float FallTime = 1 - 1 / Mathf.Pow(1 + sizeDifference, 0.33f);
+        FallTime = 3 - FallTime * 2;
+
+        ac.Fall(FallTime);
+
+
     }
+
 
 }
