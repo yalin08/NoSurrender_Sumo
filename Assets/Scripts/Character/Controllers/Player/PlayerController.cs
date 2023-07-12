@@ -17,11 +17,12 @@ public class PlayerController : ControllerBase
     {
 
 
-        if (Mathf.Abs(Joystick.Horizontal) >= 0.15f || Mathf.Abs(Joystick.Vertical) >= 0.15f)
+        if (Mathf.Abs(Joystick.Horizontal) >= 0.15f || Mathf.Abs(Joystick.Vertical) >= 0.15f) //Player just stops when you tap without this line
         {
             x = Joystick.Horizontal;
             z = Joystick.Vertical;
         }
+        
 
         Vector3 vector = new Vector3(x, 0, z).normalized;
 
@@ -33,18 +34,15 @@ public class PlayerController : ControllerBase
     // Update is called once per frame
     void Update()
     {
-        DetermineWhereToGo();
+        DetermineWhereToGo(); 
         if (!Move.canMove)
         {
             return;
         }
     
-        Move.MoveTo(MoveToObject);
+        Move.MoveTo(MoveToObject); //You move to the triangle object
 
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            Move.ac.Fall(1);
-        }
+       
 
     }
 }

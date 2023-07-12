@@ -15,10 +15,13 @@ public class GameManager : Singleton<GameManager>
     public float timer;
     int countdown = 3;
 
-
-    public void StartGame()
+    private void Awake()
     {
         FindCharacters();
+    }
+    public void StartGame()
+    {
+     
         UIManager.Instance.UIScore.enabled = true;
         UIManager.Instance.UITimer.enabled = true;
         foreach (CharacterStats cs in Characters)
@@ -30,7 +33,7 @@ public class GameManager : Singleton<GameManager>
         TimeOnScreen();
         StartCoroutine(StartTimer());
     }
-    void FindCharacters()
+    void FindCharacters() //Adds all characters to a list
     {
         Characters.Clear();
         GameObject[] cstemp = GameObject.FindGameObjectsWithTag("Character");
@@ -39,7 +42,7 @@ public class GameManager : Singleton<GameManager>
             Characters.Add(cs.GetComponent<CharacterStats>());
         }
     }
-    void TimeOnScreen()
+    void TimeOnScreen() //Show tine on UI
     {
         string minutes = Mathf.Floor(timer / 60).ToString();
         int secondsNumber = (int)(timer % 60);
@@ -53,20 +56,28 @@ public class GameManager : Singleton<GameManager>
     {
         Debug.Log("Win");
         UIManager.Instance.win.SetActive(true);
-       
-        LastOneDances();
+
+        EndGame();
     }
     public void Lose()
     {
         Debug.Log("Lose");
         UIManager.Instance.lose.SetActive(true);
 
-        LastOneDances();
+        EndGame();
     }
-    public void LastOneDances()
+    public void EndGame()
     {
         UIManager.Instance.UITimer.enabled = false;
         UIManager.Instance.DefeatedEnemies.transform.parent.gameObject.SetActive(true);
+        BurgerSpawner.Instance.StopAllCoroutines();
+        CameraFollow.Instance.OnGameFinish();
+
+
+        if (Characters.Count > 0)
+            CameraFollow.Instance.followObject = Characters[0].transform;
+
+
         foreach (CharacterStats stat in Characters)
         {
             CharacterMove move = stat.GetComponent<CharacterMove>();
@@ -82,11 +93,11 @@ public class GameManager : Singleton<GameManager>
     {
         StartCoroutine(StartCountdown());
     }
-    IEnumerator StartCountdown()
+    IEnumerator StartCountdown() //Countdown when game starts
     {
         UIManager.Instance.UICountdown.text = "" + countdown;
         yield return new WaitForSeconds(1);
-        UIManager.Instance.UICountdown.transform.DOScale(1.3f,0.3f).OnComplete(ResetTween);
+        UIManager.Instance.UICountdown.transform.DOScale(1.3f, 0.3f).OnComplete(ResetTween);
         countdown--;
         UIManager.Instance.UICountdown.text = "" + countdown;
         if (countdown <= 0)
@@ -123,19 +134,20 @@ public class GameManager : Singleton<GameManager>
     {
 
         Characters = Characters.OrderBy(
-         x => -x.SizePoints   //-x.gameObject.transform.position.z
+         x => -x.SizePoints   // List gets arranged by player points, [0] is the winner.
         ).ToList();
 
         foreach (CharacterStats cs in Characters)
         {
-            cs.crown.SetActive(false);
+            cs.StickmanAnimator.crown.SetActive(false);
         }
-        Characters[0].crown.SetActive(true);
+        if(Characters.Count>0)
+        Characters[0].StickmanAnimator.crown.SetActive(true); //Put crown on the winner
 
 
-        if (timer <= 0)
+        if (timer <= 0) //When timer runs out
         {
-            if (Characters[0].gameObject.layer == 3)
+            if (Characters[0].gameObject.layer == 3) //if player is the biggest character
             {
                 Win();
             }
@@ -145,9 +157,9 @@ public class GameManager : Singleton<GameManager>
             }
         }
 
-        if (Characters.Count == 1)
+        if (Characters.Count == 1) //If there is only one character left
         {
-            if (Characters[0].gameObject.layer == 3)
+            if (Characters[0].gameObject.layer == 3)//if player is the biggest character
             {
                 Win();
             }
@@ -156,7 +168,7 @@ public class GameManager : Singleton<GameManager>
                 Lose();
             }
         }
-        if (Characters.Count == 0)
+        if (Characters.Count == 0) //If everyone is dead
         {
             Lose();
         }

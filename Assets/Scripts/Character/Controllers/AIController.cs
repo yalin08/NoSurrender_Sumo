@@ -48,7 +48,11 @@ public class AIController : ControllerBase
     // Update is called once per frame
     void Update()
     {
-        if (BurgerSpawner.Instance.BurgersOnTheScene.Count > 0)
+        if (!Move.canMove)
+        {
+            return;
+        }
+        if (BurgerSpawner.Instance.BurgersOnTheScene.Count > 0) //Checks if there are burgers on the level
         {
             Target = FindClosestBurger();
         }
@@ -57,7 +61,7 @@ public class AIController : ControllerBase
             Target = FindClosestCharacter();
         }
 
-        if (GameManager.Instance.Characters[0] == Move.Stats)
+        if (GameManager.Instance.Characters[0] == Move.Stats)  //Ignores burgers and attacks players when he is the biggest
             if (GameManager.Instance.Characters.Count > 1)
                 Target = FindClosestCharacter();
 

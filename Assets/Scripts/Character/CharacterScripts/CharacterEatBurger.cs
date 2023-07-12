@@ -7,7 +7,7 @@ public class CharacterEatBurger : MonoBehaviour
     [HideInInspector] public CharacterStats Stats;
     public int GainByEating;
 
-    private void OnValidate()
+    private void Awake()
     {
         Stats = GetComponentInParent<CharacterStats>();
     }

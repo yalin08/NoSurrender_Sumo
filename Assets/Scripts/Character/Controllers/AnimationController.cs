@@ -7,15 +7,15 @@ public class AnimationController : MonoBehaviour
     public Animator animator;
 
 
-    public void Run(float f)
+    public void Run(float runSpeed)
     {
-        animator.speed = f;
+        animator.speed = runSpeed;
         animator.SetTrigger("Run");
     }
 
-    public void Fall(float f)
+    public void Fall(float fallSpeed)
     {
-        animator.speed = f;
+        animator.speed = fallSpeed; 
         animator.SetTrigger("Fall");
     }
 

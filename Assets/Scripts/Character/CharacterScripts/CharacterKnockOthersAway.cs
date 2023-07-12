@@ -10,7 +10,7 @@ public class CharacterKnockOthersAway : MonoBehaviour
 
     public float KnockbackAmount;
     public float criticalMultiplier;
-    private void OnValidate()
+    private void Awake()
     {
         Stats = GetComponentInParent<CharacterStats>();
         Move = GetComponentInParent<CharacterMove>();
@@ -23,30 +23,29 @@ public class CharacterKnockOthersAway : MonoBehaviour
         {
 
             Vector3 directionEnemy = Vector3.Normalize(collision.transform.position - transform.position);
-            Vector3 directionSelf = Vector3.Normalize(transform.position - collision.transform.position);
+         
 
             CharacterMove cm = collision.gameObject.GetComponent<CharacterMove>();
-            //  float f = KnockbackAmount + (Stats.SizePoints * 0.01f);
-
-
+            cm.Stats.StickmanAnimator.EnableTrail();
+        
 
 
 
             cm.Knockback(directionEnemy * KnockbackAmount, Stats.SizePoints);
             cm.Stats.LastTouchedEnemy = Stats;
         }
-        else if (collision.transform.CompareTag("WeakPoint"))
+        else if (collision.transform.CompareTag("WeakPoint")) //If you hit them from their back
         {
-            if (collision.transform.parent == transform) return;
+            if (collision.transform.parent == transform) return;  
 
 
             Vector3 directionEnemy = Vector3.Normalize(collision.transform.parent.position - transform.position);
             directionEnemy.y = 0;
-            Vector3 directionSelf = Vector3.Normalize(transform.position - collision.transform.parent.position);
-
+         
             Debug.Log("critical hit");
             CharacterMove cm = collision.transform.parent.GetComponent<CharacterMove>();
-            //  float f = KnockbackAmount + (Stats.SizePoints * 0.01f);
+            cm.Stats.StickmanAnimator.EnableTrailCrit();
+           
 
 
 

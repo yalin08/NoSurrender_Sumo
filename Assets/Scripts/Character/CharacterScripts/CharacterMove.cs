@@ -15,7 +15,7 @@ public class CharacterMove : MonoBehaviour
 
 
 
-    private void OnValidate()
+    private void Awake()
     {
         Stats = GetComponent<CharacterStats>();
         rb = GetComponent<Rigidbody>();
@@ -27,9 +27,9 @@ public class CharacterMove : MonoBehaviour
         if (canMove)
         {
 
-            float f = 1 - 1 / (1 + 0.3f * (Stats.SizePoints / 100));
-            f = 1 - f / 2;
-            ac.Run(f);
+            float runSpeed = 1 - 1 / (1 + 0.3f * (Stats.SizePoints / 100)); // Your animation speed gets slower as you get bigger
+            runSpeed = 1 - runSpeed / 2;
+            ac.Run(runSpeed);
             // Debug.Log(f);
         }
 
@@ -57,21 +57,25 @@ public class CharacterMove : MonoBehaviour
         if (!canMove)
             return;
 
+        //Checks the direction of the target
         Vector3 MoveToVector = new Vector3(MoveToObject.position.x, 0, MoveToObject.position.z);
         Vector3 MoveFromVector = new Vector3(transform.position.x, 0, transform.position.z);
         direction = Vector3.Normalize(MoveToVector - MoveFromVector);
 
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, LookRotation(MoveToObject), Stats.speed);
+
+        //Moves towards that direction
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, LookRotation(MoveToObject), Stats.speed*100 *Time.deltaTime);
         velocity = Vector3.MoveTowards(velocity, direction * Stats.speed, Stats.speed *10* Time.deltaTime);
+     
         velocity.y = rb.velocity.y;
         rb.velocity = velocity;
     }
 
-    public void Knockback(Vector3 vector3, float otherSize)
+    public void Knockback(Vector3 vector3, float otherSize) //Gets knocked over depending on other player's size
     {
         canMove = false;
-
-        if (gameObject.layer == 3)
+        
+        if (gameObject.layer == 3) //Camera shake if player gets knocked over
         {
             CameraFollow.Instance.ShakeCamera();
         }
@@ -84,7 +88,7 @@ public class CharacterMove : MonoBehaviour
         float throwForce = Mathf.Pow(sizeDifference, 1f / 10f) * 0.6f;
 
         rb.velocity = Vector3.zero;
-        rb.AddForce(vector3 * throwForce);
+        rb.AddForce(vector3 * throwForce,ForceMode.Impulse);
 
         //   float FallTime = 1 - 1 / (1 + 0.1f * ());
         float FallTime = 1 - 1 / Mathf.Pow(1 + sizeDifference, 0.33f);

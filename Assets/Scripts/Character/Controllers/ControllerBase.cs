@@ -14,7 +14,7 @@ public class ControllerBase : MonoBehaviour
 
   [HideInInspector]  public CharacterMove Move;
 
-    private void OnValidate()
+    private void Awake()
     {
         Move = GetComponent<CharacterMove>();
     }

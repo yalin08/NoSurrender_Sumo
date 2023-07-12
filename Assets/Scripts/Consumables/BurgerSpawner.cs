@@ -14,7 +14,7 @@ public class BurgerSpawner : Singleton<BurgerSpawner>
 
     public Transform[] SpawnLocations;
     [HideInInspector] public List<Transform> _SpawnLocations;
-    public List<Transform> BurgersOnTheScene;
+    public List<Transform> BurgersOnTheScene; //AI characters will try to move towards them
     
 
     public IEnumerator SpawnBurgers()
